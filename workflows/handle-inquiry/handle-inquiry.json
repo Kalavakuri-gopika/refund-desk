@@ -1,0 +1,135 @@
+{
+  "name": "handle-inquiry",
+  "description": "Orchestrates customer inquiry triage, policy-driven auto-refunds under $25, and human-in-the-loop Store Owner approval for higher refunds.",
+  "start": { "type": "MANUAL" },
+  "visibility": "POD",
+  "nodes": [
+    {
+      "id": "intake",
+      "type": "FORM",
+      "label": "Customer Inquiry Intake",
+      "config": {
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "ticket_id": { "type": "string" },
+            "order_id": { "type": "string" },
+            "customer_email": { "type": "string" },
+            "customer_name": { "type": "string" },
+            "message": { "type": "string" },
+            "requested_refund": { "type": "number" }
+          },
+          "required": ["ticket_id", "order_id", "message", "requested_refund"]
+        }
+      }
+    },
+    {
+      "id": "triage",
+      "type": "AGENT",
+      "label": "AI Triage & Policy Match",
+      "config": {
+        "agent_name": "triage-agent",
+        "input_mapping": {
+          "ticket_id": { "type": "expression", "value": "intake.ticket_id" },
+          "order_id": { "type": "expression", "value": "intake.order_id" },
+          "customer_email": { "type": "expression", "value": "intake.customer_email", "optional": true },
+          "customer_name": { "type": "expression", "value": "intake.customer_name", "optional": true },
+          "message": { "type": "expression", "value": "intake.message" },
+          "requested_refund": { "type": "expression", "value": "intake.requested_refund" }
+        }
+      }
+    },
+    {
+      "id": "route_decision",
+      "type": "DECISION",
+      "label": "Evaluate Action Required",
+      "config": {
+        "rules": [
+          {
+            "condition": "triage.decision == 'auto_approve'",
+            "next_node_id": "auto_refund"
+          },
+          {
+            "condition": "triage.decision == 'requires_owner_approval'",
+            "next_node_id": "owner_approval"
+          }
+        ]
+      }
+    },
+    {
+      "id": "auto_refund",
+      "type": "FUNCTION",
+      "label": "Auto-Process Refund (<$25)",
+      "config": {
+        "function_name": "process_refund",
+        "input_mapping": {
+          "ticket_id": { "type": "expression", "value": "intake.ticket_id" },
+          "order_id": { "type": "expression", "value": "intake.order_id" },
+          "amount": { "type": "expression", "value": "intake.requested_refund" },
+          "reason": { "type": "expression", "value": "triage.reasoning" },
+          "authorized_by": { "type": "literal", "value": "ai_policy_auto" }
+        }
+      }
+    },
+    {
+      "id": "owner_approval",
+      "type": "FORM",
+      "label": "Store Owner Refund Approval",
+      "config": {
+        "input_schema": {
+          "type": "object",
+          "properties": {
+            "approved": { "type": "boolean", "description": "Authorize releasing refund from store account" },
+            "reason": { "type": "string", "description": "Notes or justification for approval/denial" }
+          },
+          "required": ["approved"]
+        }
+      }
+    },
+    {
+      "id": "approval_decision",
+      "type": "DECISION",
+      "label": "Was Refund Authorized?",
+      "config": {
+        "rules": [
+          {
+            "condition": "owner_approval.approved == `true`",
+            "next_node_id": "execute_owner_refund"
+          }
+        ]
+      }
+    },
+    {
+      "id": "execute_owner_refund",
+      "type": "FUNCTION",
+      "label": "Execute Owner-Approved Refund",
+      "config": {
+        "function_name": "process_refund",
+        "input_mapping": {
+          "ticket_id": { "type": "expression", "value": "intake.ticket_id" },
+          "order_id": { "type": "expression", "value": "intake.order_id" },
+          "amount": { "type": "expression", "value": "intake.requested_refund" },
+          "reason": { "type": "expression", "value": "owner_approval.reason", "optional": true },
+          "authorized_by": { "type": "literal", "value": "store_owner" }
+        }
+      }
+    },
+    {
+      "id": "end",
+      "type": "END",
+      "label": "Inquiry Resolved"
+    }
+  ],
+  "edges": [
+    { "id": "e_intake_triage", "source": "intake", "target": "triage" },
+    { "id": "e_triage_decision", "source": "triage", "target": "route_decision" },
+    { "id": "e_route_default", "source": "route_decision", "target": "end" },
+    { "id": "e_route_auto", "source": "route_decision", "target": "auto_refund" },
+    { "id": "e_route_approval", "source": "route_decision", "target": "owner_approval" },
+    { "id": "e_auto_end", "source": "auto_refund", "target": "end" },
+    { "id": "e_owner_decision", "source": "owner_approval", "target": "approval_decision" },
+    { "id": "e_approval_default", "source": "approval_decision", "target": "end" },
+    { "id": "e_approval_exec", "source": "approval_decision", "target": "execute_owner_refund" },
+    { "id": "e_exec_end", "source": "execute_owner_refund", "target": "end" }
+  ]
+}

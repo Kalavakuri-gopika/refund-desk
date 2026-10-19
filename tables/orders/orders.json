@@ -1,0 +1,33 @@
+{
+  "name": "orders",
+  "primary_key_column": "id",
+  "enable_rls": false,
+  "visibility": "POD",
+  "columns": [
+    { "name": "order_id", "type": "TEXT", "required": true, "unique": true, "max_length": 64 },
+    { "name": "customer_name", "type": "TEXT", "required": true, "max_length": 128 },
+    { "name": "customer_email", "type": "TEXT", "required": true, "max_length": 128 },
+    { "name": "amount", "type": "FLOAT", "required": true },
+    { "name": "order_date", "type": "DATETIME", "required": true },
+    { "name": "carrier", "type": "TEXT", "required": true, "max_length": 64 },
+    { "name": "tracking_number", "type": "TEXT", "required": true, "max_length": 128 },
+    {
+      "name": "shipping_status",
+      "type": "ENUM",
+      "required": true,
+      "default": "delivered",
+      "options": ["delivered", "in_transit", "delayed", "returned"]
+    },
+    { "name": "last_tracking_update", "type": "DATETIME" },
+    { "name": "item_summary", "type": "TEXT", "max_length": 500 },
+    {
+      "name": "refund_status",
+      "type": "ENUM",
+      "required": true,
+      "default": "none",
+      "options": ["none", "requested", "approved", "rejected", "refunded"]
+    },
+    { "name": "refunded_amount", "type": "FLOAT", "default": 0.0 }
+  ],
+  "config": {}
+}

@@ -1,0 +1,1287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>RefundDesk — AI Support & Dispute Operations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0c0e14;
+        --card-bg: #141722;
+        --card-border: #222738;
+        --card-hover: #191d2c;
+        --text: #f0f3fa;
+        --text-muted: #8c96ac;
+        --accent: #6366f1;
+        --accent-glow: rgba(99, 102, 241, 0.2);
+        --gold: #f59e0b;
+        --gold-glow: rgba(245, 158, 11, 0.15);
+        --green: #10b981;
+        --green-glow: rgba(16, 185, 129, 0.15);
+        --red: #ef4444;
+        --red-glow: rgba(239, 68, 68, 0.15);
+        --cyan: #06b6d4;
+        --font-heading: 'Outfit', -apple-system, sans-serif;
+        --font-body: 'Plus Jakarta Sans', -apple-system, sans-serif;
+        --radius: 14px;
+        --shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+      }
+
+      [data-theme="light"] {
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --card-hover: #f1f5f9;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --accent: #4f46e5;
+        --accent-glow: rgba(79, 70, 229, 0.1);
+        --gold: #d97706;
+        --gold-glow: rgba(217, 119, 6, 0.1);
+        --green: #059669;
+        --green-glow: rgba(5, 150, 105, 0.1);
+        --red: #dc2626;
+        --red-glow: rgba(220, 38, 38, 0.1);
+        --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        line-height: 1.5;
+        transition: background 0.3s ease, color 0.3s ease;
+      }
+
+      /* Layout */
+      .layout {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 260px;
+        background: var(--card-bg);
+        border-right: 1px solid var(--card-border);
+        padding: 1.5rem 1.25rem;
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+      }
+
+      .logo-area {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 2rem;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6366f1, #a855f7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-family: var(--font-heading);
+        font-size: 1.15rem;
+        box-shadow: 0 4px 12px var(--accent-glow);
+      }
+
+      .logo-text h1 {
+        font-family: var(--font-heading);
+        font-size: 1.25rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        line-height: 1.2;
+      }
+
+      .logo-text .badge {
+        font-size: 0.68rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--accent);
+        font-weight: 600;
+      }
+
+      .nav-menu {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        flex: 1;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+      }
+
+      .nav-item:hover {
+        background: var(--card-hover);
+        color: var(--text);
+      }
+
+      .nav-item.active {
+        background: var(--card-hover);
+        color: var(--text);
+        border-color: var(--card-border);
+      }
+
+      .nav-badge {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        font-weight: 700;
+      }
+
+      .nav-badge.gold {
+        background: var(--gold-glow);
+        color: var(--gold);
+        border: 1px solid rgba(245, 158, 11, 0.3);
+      }
+
+      .sidebar-footer {
+        border-top: 1px solid var(--card-border);
+        padding-top: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .user-info {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+      }
+
+      .user-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #334155;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.85rem;
+        font-weight: 700;
+      }
+
+      .user-details .user-name {
+        font-size: 0.82rem;
+        font-weight: 600;
+      }
+
+      .user-details .user-role {
+        font-size: 0.7rem;
+        color: var(--gold);
+        font-weight: 600;
+      }
+
+      .theme-btn {
+        background: transparent;
+        border: 1px solid var(--card-border);
+        color: var(--text-muted);
+        padding: 0.4rem 0.65rem;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: all 0.2s;
+      }
+
+      .theme-btn:hover {
+        color: var(--text);
+        border-color: var(--text-muted);
+      }
+
+      /* Main Content */
+      .main-content {
+        flex: 1;
+        padding: 2rem 2.5rem;
+        overflow-y: auto;
+      }
+
+      /* Header */
+      .header-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+      }
+
+      .header-title h2 {
+        font-family: var(--font-heading);
+        font-size: 1.8rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .header-title p {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+        margin-top: 0.25rem;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.65rem 1.15rem;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.88rem;
+        cursor: pointer;
+        border: 1px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 4px 14px var(--accent-glow);
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: var(--card-bg);
+        border-color: var(--card-border);
+        color: var(--text);
+      }
+
+      .btn-secondary:hover {
+        background: var(--card-hover);
+      }
+
+      .btn-success {
+        background: var(--green);
+        color: white;
+        box-shadow: 0 4px 14px var(--green-glow);
+      }
+
+      .btn-danger {
+        background: transparent;
+        border-color: var(--red);
+        color: var(--red);
+      }
+
+      .btn-danger:hover {
+        background: var(--red-glow);
+      }
+
+      /* Stats Row */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+      }
+
+      .stat-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        padding: 1.25rem 1.4rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .stat-card .label {
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+
+      .stat-card .value {
+        font-family: var(--font-heading);
+        font-size: 2.1rem;
+        font-weight: 700;
+        margin: 0.4rem 0 0.2rem;
+        line-height: 1.1;
+      }
+
+      .stat-card .subtext {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+      }
+
+      .stat-card.alert-border {
+        border-left: 4px solid var(--gold);
+      }
+
+      .stat-card.good-border {
+        border-left: 4px solid var(--green);
+      }
+
+      /* Section Views */
+      .view-section {
+        display: none;
+      }
+
+      .view-section.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      /* Hero Gate Cards */
+      .approval-card {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+        position: relative;
+        border-left: 4px solid var(--gold);
+        transition: all 0.25s ease;
+      }
+
+      .approval-card:hover {
+        border-color: rgba(245, 158, 11, 0.4);
+        background: var(--card-hover);
+      }
+
+      .approval-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+      }
+
+      .approval-title-box h3 {
+        font-family: var(--font-heading);
+        font-size: 1.18rem;
+        font-weight: 600;
+      }
+
+      .approval-meta {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin-top: 0.2rem;
+      }
+
+      .price-tag {
+        font-family: var(--font-heading);
+        font-size: 1.45rem;
+        font-weight: 700;
+        color: var(--gold);
+        text-align: right;
+      }
+
+      .price-tag span {
+        display: block;
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-family: var(--font-body);
+      }
+
+      .ai-insight-box {
+        background: rgba(99, 102, 241, 0.08);
+        border: 1px solid rgba(99, 102, 241, 0.2);
+        border-radius: 10px;
+        padding: 1rem 1.15rem;
+        margin: 1rem 0;
+      }
+
+      .ai-insight-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        margin-bottom: 0.4rem;
+      }
+
+      .ai-insight-body {
+        font-size: 0.88rem;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      .customer-message-box {
+        font-style: italic;
+        color: var(--text-muted);
+        font-size: 0.86rem;
+        border-left: 2px solid var(--card-border);
+        padding-left: 0.75rem;
+        margin: 0.75rem 0;
+      }
+
+      .approval-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+        border-top: 1px solid var(--card-border);
+        padding-top: 1rem;
+      }
+
+      /* Tables */
+      .table-container {
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+
+      .table-toolbar {
+        padding: 1rem 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--card-border);
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-tabs {
+        display: flex;
+        gap: 0.4rem;
+      }
+
+      .filter-tab {
+        background: transparent;
+        border: 1px solid var(--card-border);
+        color: var(--text-muted);
+        padding: 0.4rem 0.85rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .filter-tab.active, .filter-tab:hover {
+        background: var(--card-hover);
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      .search-box {
+        background: var(--bg);
+        border: 1px solid var(--card-border);
+        padding: 0.45rem 0.9rem;
+        border-radius: 8px;
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.85rem;
+        min-width: 220px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 0.88rem;
+      }
+
+      th {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 600;
+        background: rgba(0, 0, 0, 0.04);
+        border-bottom: 1px solid var(--card-border);
+      }
+
+      td {
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid var(--card-border);
+        vertical-align: middle;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:hover td {
+        background: var(--card-hover);
+      }
+
+      /* Badges */
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.65rem;
+        border-radius: 6px;
+        font-size: 0.74rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+      }
+
+      .tag-delivered { background: var(--green-glow); color: var(--green); border: 1px solid rgba(16, 185, 129, 0.3); }
+      .tag-in_transit { background: rgba(99, 102, 241, 0.15); color: #818cf8; border: 1px solid rgba(99, 102, 241, 0.3); }
+      .tag-delayed { background: var(--red-glow); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
+      .tag-auto_resolved { background: var(--green-glow); color: var(--green); }
+      .tag-waiting_approval { background: var(--gold-glow); color: var(--gold); }
+      .tag-approved { background: var(--green-glow); color: var(--green); }
+      .tag-frustrated, .tag-angry { background: var(--red-glow); color: var(--red); }
+      .tag-neutral { background: rgba(140, 150, 172, 0.15); color: var(--text-muted); }
+
+      /* Simulator View */
+      .simulator-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 900px) {
+        .simulator-grid { grid-template-columns: 1fr; }
+        .layout { flex-direction: column; }
+        .sidebar { width: 100%; }
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      .form-group label {
+        display: block;
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 0.4rem;
+        color: var(--text-muted);
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        border-radius: 10px;
+        background: var(--bg);
+        border: 1px solid var(--card-border);
+        color: var(--text);
+        font-family: inherit;
+        font-size: 0.9rem;
+      }
+
+      textarea.form-control {
+        resize: vertical;
+        min-height: 110px;
+      }
+
+      .scenario-chips {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .scenario-chip {
+        padding: 0.4rem 0.85rem;
+        border-radius: 999px;
+        background: var(--card-hover);
+        border: 1px solid var(--card-border);
+        font-size: 0.78rem;
+        cursor: pointer;
+        color: var(--text-muted);
+        transition: all 0.2s;
+      }
+
+      .scenario-chip:hover {
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      /* Notification Toast */
+      .toast {
+        position: fixed;
+        bottom: 2rem;
+        right: 2rem;
+        background: var(--card-bg);
+        border: 1px solid var(--card-border);
+        border-radius: 12px;
+        padding: 1rem 1.4rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 999;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .toast.success { border-left: 4px solid var(--green); }
+      .toast.alert { border-left: 4px solid var(--gold); }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo-area">
+          <div class="logo-icon">RD</div>
+          <div class="logo-text">
+            <h1>RefundDesk</h1>
+            <div class="badge">Nexus Spring of Code 2026</div>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <div class="nav-item active" onclick="switchTab('approvals')">
+            <span>Approval Gate</span>
+            <span id="nav-approval-count" class="nav-badge gold">1</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('tickets')">
+            <span>Support Queue</span>
+            <span id="nav-ticket-count" class="nav-badge">12</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('orders')">
+            <span>Orders & Shipping</span>
+            <span class="nav-badge">30</span>
+          </div>
+          <div class="nav-item" onclick="switchTab('simulator')">
+            <span>Message Simulator</span>
+            <span class="nav-badge" style="color:var(--accent);">Test</span>
+          </div>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">FO</div>
+            <div class="user-details">
+              <div class="user-name">Founder / Owner</div>
+              <div class="user-role">Approver (POD_ADMIN)</div>
+            </div>
+          </div>
+          <button class="theme-btn" onclick="toggleTheme()" title="Toggle Theme">◐</button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <!-- Top Bar -->
+        <header class="header-bar">
+          <div class="header-title">
+            <h2 id="view-title">Store Owner Approval Gate</h2>
+            <p id="view-subtitle">High-value refund requests (&gt; $25.00) and damaged items requiring human sign-off.</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-secondary" onclick="runNightlySweep()">
+              <span>⏱</span> Trigger Nightly Sweep
+            </button>
+            <button class="btn btn-primary" onclick="switchTab('simulator')">
+              <span>+</span> Simulate Customer Email
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats Overview -->
+        <section class="stats-grid">
+          <div class="stat-card alert-border">
+            <div class="label">Pending Approval (&gt;$25)</div>
+            <div class="value" id="stat-pending">1</div>
+            <div class="subtext">Awaiting Store Owner sign-off</div>
+          </div>
+          <div class="stat-card good-border">
+            <div class="label">Auto-Resolved (&le;$25)</div>
+            <div class="value" id="stat-autoresolved">18</div>
+            <div class="subtext">Instant satisfaction guarantee</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Delayed Shipments</div>
+            <div class="value" id="stat-delayed">3</div>
+            <div class="subtext">Flagged by autonomous sweep</div>
+          </div>
+          <div class="stat-card">
+            <div class="label">Total Orders (30d)</div>
+            <div class="value" id="stat-total-orders">30</div>
+            <div class="subtext">Synthetic e-commerce dataset</div>
+          </div>
+        </section>
+
+        <!-- VIEW 1: APPROVAL GATE (HERO MOMENT) -->
+        <section id="view-approvals" class="view-section active">
+          <div id="approvals-container">
+            <!-- Rendered by JS -->
+          </div>
+        </section>
+
+        <!-- VIEW 2: SUPPORT QUEUE -->
+        <section id="view-tickets" class="view-section">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterTickets('all', this)">All</button>
+                <button class="filter-tab" onclick="filterTickets('waiting_approval', this)">Waiting Approval</button>
+                <button class="filter-tab" onclick="filterTickets('auto_resolved', this)">Auto-Resolved</button>
+                <button class="filter-tab" onclick="filterTickets('shipping_delay', this)">Shipping Delays</button>
+              </div>
+              <input type="text" class="search-box" placeholder="Search tickets..." oninput="searchTickets(this.value)" />
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Ticket</th>
+                  <th>Order</th>
+                  <th>Customer</th>
+                  <th>Category</th>
+                  <th>Sentiment</th>
+                  <th>Status</th>
+                  <th>Refund</th>
+                </tr>
+              </thead>
+              <tbody id="tickets-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 3: ORDERS & SHIPPING -->
+        <section id="view-orders" class="view-section">
+          <div class="table-container">
+            <div class="table-toolbar">
+              <div class="filter-tabs">
+                <button class="filter-tab active" onclick="filterOrders('all', this)">All Shipments</button>
+                <button class="filter-tab" onclick="filterOrders('delayed', this)">Delayed (&gt;48h)</button>
+                <button class="filter-tab" onclick="filterOrders('in_transit', this)">In Transit</button>
+                <button class="filter-tab" onclick="filterOrders('delivered', this)">Delivered</button>
+              </div>
+              <input type="text" class="search-box" placeholder="Search order ID or customer..." oninput="searchOrders(this.value)" />
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Amount</th>
+                  <th>Items</th>
+                  <th>Carrier</th>
+                  <th>Status</th>
+                  <th>Refund State</th>
+                </tr>
+              </thead>
+              <tbody id="orders-tbody">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- VIEW 4: SIMULATOR (TEST HERO MOMENT) -->
+        <section id="view-simulator" class="view-section">
+          <div class="simulator-grid">
+            <div class="stat-card">
+              <h3 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Inbound Customer Email Simulator</h3>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+                Select a preset scenario to test how RefundDesk classifies messages, consults store policy, and routes to either instant auto-refund (&le;$25) or the Store Owner approval gate (&gt;$25).
+              </p>
+
+              <div class="scenario-chips">
+                <div class="scenario-chip" onclick="loadScenario('high_refund')">
+                  ⚠️ High Value: Damaged $85 Coat (Requires Approval)
+                </div>
+                <div class="scenario-chip" onclick="loadScenario('auto_refund')">
+                  ⚡ Instant: $18 Sizing Issue (Auto-Refund &le;$25)
+                </div>
+                <div class="scenario-chip" onclick="loadScenario('shipping')">
+                  📦 Inquiry: Where is my order? (Tracking RAG)
+                </div>
+              </div>
+
+              <form onsubmit="handleSimulateSubmit(event)">
+                <div class="form-group">
+                  <label>Order ID</label>
+                  <input id="sim-order-id" class="form-control" value="ORD-1084" required />
+                </div>
+                <div class="form-group">
+                  <label>Customer Email</label>
+                  <input id="sim-email" class="form-control" value="sarah.jenkins@example.com" required />
+                </div>
+                <div class="form-group">
+                  <label>Requested Refund Amount ($)</label>
+                  <input id="sim-amount" type="number" step="0.01" class="form-control" value="85.00" required />
+                </div>
+                <div class="form-group">
+                  <label>Customer Message</label>
+                  <textarea id="sim-message" class="form-control" required>Hello, my winter parka arrived yesterday but the front zipper is completely ripped and unusable. I would like a full refund of $85.00 immediately. I have attached photos.</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                  🚀 Process Inbound Message through Triage Agent
+                </button>
+              </form>
+            </div>
+
+            <div class="stat-card" id="sim-result-card" style="display: none;">
+              <h3 style="font-family: var(--font-heading); margin-bottom: 0.5rem;">Workflow Execution Trace</h3>
+              <div id="sim-trace-content">
+                <!-- Trace output -->
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast success">
+      <span id="toast-icon">✓</span>
+      <div id="toast-msg">Refund authorized successfully!</div>
+    </div>
+
+    <!-- Seed Dataset & Application Logic -->
+    <script>
+      // 1. Initial 30-Day Synthetic Dataset
+      const mockOrders = [
+        { id: "1", order_id: "ORD-1084", customer_name: "Sarah Jenkins", customer_email: "sarah.jenkins@example.com", amount: 85.00, carrier: "FedEx", tracking_number: "FX-9823412", shipping_status: "delivered", refund_status: "requested", item_summary: "Waterproof Winter Parka (Navy / M)" },
+        { id: "2", order_id: "ORD-1083", customer_name: "Marcus Aurel", customer_email: "marcus@example.com", amount: 18.50, carrier: "USPS", tracking_number: "US-7721893", shipping_status: "delivered", refund_status: "refunded", item_summary: "Organic Cotton Beanie" },
+        { id: "3", order_id: "ORD-1082", customer_name: "David Kim", customer_email: "dkim@example.com", amount: 142.00, carrier: "UPS", tracking_number: "1Z9999999999", shipping_status: "delayed", refund_status: "none", item_summary: "Noise Cancelling Headphones" },
+        { id: "4", order_id: "ORD-1081", customer_name: "Elena Rostova", customer_email: "elena@example.com", amount: 22.00, carrier: "DHL", tracking_number: "DHL-4412093", shipping_status: "delivered", refund_status: "none", item_summary: "Ceramic Coffee Tumbler" },
+        { id: "5", order_id: "ORD-1080", customer_name: "James Wilson", customer_email: "jwilson@example.com", amount: 240.00, carrier: "FedEx", tracking_number: "FX-1102934", shipping_status: "in_transit", refund_status: "none", item_summary: "Ergonomic Desk Chair" },
+        { id: "6", order_id: "ORD-1079", customer_name: "Chloe Bennett", customer_email: "chloe@example.com", amount: 14.00, carrier: "USPS", tracking_number: "US-8812930", shipping_status: "delivered", refund_status: "refunded", item_summary: "Braided Nylon Lightning Cable" },
+        { id: "7", order_id: "ORD-1078", customer_name: "Liam O'Connor", customer_email: "liam@example.com", amount: 65.00, carrier: "UPS", tracking_number: "1Z8888888888", shipping_status: "delayed", refund_status: "none", item_summary: "Mechanical Keyboard (Blue Switches)" },
+        { id: "8", order_id: "ORD-1077", customer_name: "Aisha Patel", customer_email: "aisha@example.com", amount: 45.00, carrier: "FedEx", tracking_number: "FX-5510293", shipping_status: "in_transit", refund_status: "none", item_summary: "Merino Wool Running Socks (3-pack)" },
+        { id: "9", order_id: "ORD-1076", customer_name: "Tyler Vance", customer_email: "tyler@example.com", amount: 19.99, carrier: "USPS", tracking_number: "US-1102934", shipping_status: "delivered", refund_status: "refunded", item_summary: "Matte Screen Protector" },
+        { id: "10", order_id: "ORD-1075", customer_name: "Grace Hopper", customer_email: "grace@example.com", amount: 95.00, carrier: "DHL", tracking_number: "DHL-9920194", shipping_status: "delayed", refund_status: "none", item_summary: "Minimalist Leather Backpack" }
+      ];
+
+      const mockTickets = [
+        {
+          id: "t1",
+          ticket_id: "TCK-401",
+          order_id: "ORD-1084",
+          customer_name: "Sarah Jenkins",
+          customer_email: "sarah.jenkins@example.com",
+          subject: "Damaged front zipper on winter parka",
+          message: "My winter parka arrived yesterday but the front zipper is completely broken. I would like a refund of $85.00.",
+          category: "damaged_item",
+          status: "waiting_approval",
+          priority: "high",
+          requested_refund: 85.00,
+          ai_analysis: {
+            policy_check: "FAILED_INSTANT_THRESHOLD",
+            reason: "Amount ($85.00) exceeds $25.00 instant limit. Within 30-day delivery window.",
+            decision: "requires_owner_approval",
+            sentiment: "frustrated"
+          },
+          resolution_note: "Paused at Store Owner Approval Gate."
+        },
+        {
+          id: "t2",
+          ticket_id: "TCK-400",
+          order_id: "ORD-1083",
+          customer_name: "Marcus Aurel",
+          customer_email: "marcus@example.com",
+          subject: "Wrong color beanie delivered",
+          message: "I ordered the charcoal beanie but got olive. Amount was $18.50.",
+          category: "refund_request",
+          status: "auto_resolved",
+          priority: "normal",
+          requested_refund: 18.50,
+          ai_analysis: {
+            policy_check: "PASSED_INSTANT_THRESHOLD",
+            reason: "Amount ($18.50) is under $25 threshold and inside 30-day window.",
+            decision: "auto_approve",
+            sentiment: "neutral"
+          },
+          resolution_note: "Refund of $18.50 processed automatically via satisfaction guarantee."
+        },
+        {
+          id: "t3",
+          ticket_id: "TCK-399",
+          order_id: "ORD-1082",
+          customer_name: "David Kim",
+          customer_email: "dkim@example.com",
+          subject: "Proactive Delivery Alert: Package delayed with UPS",
+          message: "Autonomous sweep detected tracking 1Z9999999999 stalled >48 hours in transit.",
+          category: "shipping_delay",
+          status: "new",
+          priority: "high",
+          requested_refund: 0.00,
+          ai_analysis: {
+            policy_check: "AUTONOMOUS_SWEEP_ALERT",
+            reason: "Carrier scan indicates transit disruption.",
+            decision: "draft_reply",
+            sentiment: "neutral"
+          },
+          resolution_note: "Generated by autonomous nightly shipment sweep."
+        }
+      ];
+
+      let orders = [...mockOrders];
+      let tickets = [...mockTickets];
+
+      // 2. Render Functions
+      function renderStats() {
+        const pending = tickets.filter(t => t.status === "waiting_approval").length;
+        const autoResolved = tickets.filter(t => t.status === "auto_resolved").length;
+        const delayed = orders.filter(o => o.shipping_status === "delayed").length;
+
+        document.getElementById("stat-pending").textContent = pending;
+        document.getElementById("nav-approval-count").textContent = pending;
+        document.getElementById("stat-autoresolved").textContent = autoResolved + 17; // include historical
+        document.getElementById("stat-delayed").textContent = delayed;
+        document.getElementById("nav-ticket-count").textContent = tickets.length;
+      }
+
+      function renderApprovals() {
+        const container = document.getElementById("approvals-container");
+        const pending = tickets.filter(t => t.status === "waiting_approval");
+
+        if (pending.length === 0) {
+          container.innerHTML = `
+            <div class="stat-card" style="text-align: center; padding: 3rem;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🎉</div>
+              <h3 style="font-family: var(--font-heading); margin-bottom: 0.25rem;">Approval Inbox is Clean</h3>
+              <p style="color: var(--text-muted); font-size: 0.9rem;">All high-value claims have been verified. Any refund under $25 continues to be resolved automatically by the AI teammate.</p>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = pending.map(t => `
+          <div class="approval-card" id="card-${t.ticket_id}">
+            <div class="approval-header">
+              <div class="approval-title-box">
+                <span class="tag tag-waiting_approval">Requires Owner Sign-off</span>
+                <h3 style="margin-top: 0.45rem;">${t.subject}</h3>
+                <div class="approval-meta">
+                  Ticket <b>#${t.ticket_id}</b> · Order <b>${t.order_id}</b> · ${t.customer_name} (${t.customer_email})
+                </div>
+              </div>
+              <div class="price-tag">
+                $${t.requested_refund.toFixed(2)}
+                <span>Refund Claim</span>
+              </div>
+            </div>
+
+            <div class="customer-message-box">
+              "${t.message}"
+            </div>
+
+            <div class="ai-insight-box">
+              <div class="ai-insight-header">
+                <span>🤖 AI Policy & Risk Analysis</span>
+                <span class="tag tag-${t.ai_analysis.sentiment}">${t.ai_analysis.sentiment}</span>
+              </div>
+              <div class="ai-insight-body">
+                <b>Policy Finding:</b> ${t.ai_analysis.reason}<br/>
+                <b>Automated Guardrail:</b> Per Store Policy §3, amounts exceeding $25.00 require human authorization before payment gateway dispatch.
+              </div>
+            </div>
+
+            <div class="approval-actions">
+              <button class="btn btn-danger" onclick="declineRefund('${t.ticket_id}')">Decline Request</button>
+              <button class="btn btn-success" onclick="authorizeRefund('${t.ticket_id}', '${t.order_id}', ${t.requested_refund})">
+                ✓ Authorize Refund ($${t.requested_refund.toFixed(2)})
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function renderTickets(list = tickets) {
+        const tbody = document.getElementById("tickets-tbody");
+        tbody.innerHTML = list.map(t => `
+          <tr>
+            <td><b>#${t.ticket_id}</b></td>
+            <td><code>${t.order_id}</code></td>
+            <td>
+              <div><b>${t.customer_name}</b></div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${t.customer_email}</div>
+            </td>
+            <td><span class="tag">${t.category.replace('_', ' ')}</span></td>
+            <td><span class="tag tag-${t.ai_analysis ? t.ai_analysis.sentiment : 'neutral'}">${t.ai_analysis ? t.ai_analysis.sentiment : 'neutral'}</span></td>
+            <td><span class="tag tag-${t.status}">${t.status.replace('_', ' ')}</span></td>
+            <td><b>$${t.requested_refund.toFixed(2)}</b></td>
+          </tr>
+        `).join('');
+      }
+
+      function renderOrders(list = orders) {
+        const tbody = document.getElementById("orders-tbody");
+        tbody.innerHTML = list.map(o => `
+          <tr>
+            <td><code>${o.order_id}</code></td>
+            <td>
+              <div><b>${o.customer_name}</b></div>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${o.customer_email}</div>
+            </td>
+            <td><b>$${o.amount.toFixed(2)}</b></td>
+            <td style="max-width: 220px; font-size: 0.8rem; color: var(--text-muted);">${o.item_summary}</td>
+            <td>
+              <div>${o.carrier}</div>
+              <div style="font-size:0.72rem; color:var(--text-muted);">${o.tracking_number}</div>
+            </td>
+            <td><span class="tag tag-${o.shipping_status}">${o.shipping_status.replace('_', ' ')}</span></td>
+            <td><span class="tag tag-${o.refund_status}">${o.refund_status}</span></td>
+          </tr>
+        `).join('');
+      }
+
+      // 3. User Actions & Hero Interactions
+      function authorizeRefund(ticketId, orderId, amount) {
+        // Update ticket
+        const ticket = tickets.find(t => t.ticket_id === ticketId);
+        if (ticket) {
+          ticket.status = "approved";
+          ticket.resolution_note = `Refund of $${amount.toFixed(2)} authorized by Store Owner. Payment gateway credited.`;
+        }
+
+        // Update order
+        const order = orders.find(o => o.order_id === orderId);
+        if (order) {
+          order.refund_status = "refunded";
+        }
+
+        renderStats();
+        renderApprovals();
+        renderTickets();
+        renderOrders();
+        showToast(`Authorized $${amount.toFixed(2)} refund for order ${orderId}!`, "success");
+      }
+
+      function declineRefund(ticketId) {
+        const ticket = tickets.find(t => t.ticket_id === ticketId);
+        if (ticket) {
+          ticket.status = "rejected";
+          ticket.resolution_note = "Declined by Store Owner upon inspection.";
+        }
+        renderStats();
+        renderApprovals();
+        renderTickets();
+        showToast(`Refund request ${ticketId} declined.`, "alert");
+      }
+
+      function runNightlySweep() {
+        // Trigger autonomous shipment audit
+        const delayedCount = orders.filter(o => o.shipping_status === "delayed").length;
+        showToast(`Autonomous Nightly Sweep executed: Audited 30 shipments, verified ${delayedCount} alerts.`, "success");
+      }
+
+      function loadScenario(type) {
+        if (type === 'high_refund') {
+          document.getElementById("sim-order-id").value = "ORD-1084";
+          document.getElementById("sim-email").value = "sarah.jenkins@example.com";
+          document.getElementById("sim-amount").value = "85.00";
+          document.getElementById("sim-message").value = "Hello, my winter parka arrived yesterday but the front zipper is completely ripped and unusable. I would like a full refund of $85.00 immediately. I have attached photos.";
+        } else if (type === 'auto_refund') {
+          document.getElementById("sim-order-id").value = "ORD-1081";
+          document.getElementById("sim-email").value = "elena@example.com";
+          document.getElementById("sim-amount").value = "22.00";
+          document.getElementById("sim-message").value = "Hi, the ceramic coffee tumbler arrived with a chipped handle. Since it's only $22, can you process a refund?";
+        } else if (type === 'shipping') {
+          document.getElementById("sim-order-id").value = "ORD-1080";
+          document.getElementById("sim-email").value = "jwilson@example.com";
+          document.getElementById("sim-amount").value = "0.00";
+          document.getElementById("sim-message").value = "Hello, I haven't received my desk chair yet. Can you tell me where it is?";
+        }
+      }
+
+      function handleSimulateSubmit(e) {
+        e.preventDefault();
+        const orderId = document.getElementById("sim-order-id").value.trim();
+        const email = document.getElementById("sim-email").value.trim();
+        const amount = parseFloat(document.getElementById("sim-amount").value) || 0;
+        const msg = document.getElementById("sim-message").value.trim();
+
+        const isOverThreshold = amount > 25.00;
+        const ticketId = "TCK-" + Math.floor(100 + Math.random() * 900);
+
+        const newTicket = {
+          id: "t_" + Date.now(),
+          ticket_id: ticketId,
+          order_id: orderId,
+          customer_name: email.split('@')[0],
+          customer_email: email,
+          subject: msg.substring(0, 45) + "...",
+          message: msg,
+          category: amount > 0 ? (amount > 50 ? "damaged_item" : "refund_request") : "shipping_delay",
+          status: isOverThreshold ? "waiting_approval" : (amount > 0 ? "auto_resolved" : "closed"),
+          priority: isOverThreshold ? "high" : "normal",
+          requested_refund: amount,
+          ai_analysis: {
+            policy_check: isOverThreshold ? "EXCEEDS_25_INSTANT_THRESHOLD" : "WITHIN_INSTANT_LIMIT",
+            reason: isOverThreshold
+              ? `Requested refund $${amount.toFixed(2)} exceeds $25 threshold. Halting at Store Owner Approval Gate.`
+              : `Requested refund $${amount.toFixed(2)} meets instant satisfaction policy. Auto-issuing credit.`,
+            decision: isOverThreshold ? "requires_owner_approval" : (amount > 0 ? "auto_approve" : "draft_reply"),
+            sentiment: isOverThreshold ? "frustrated" : "neutral"
+          },
+          resolution_note: isOverThreshold
+            ? "Waiting for Store Owner authorization."
+            : (amount > 0 ? `Auto-refunded $${amount.toFixed(2)} per §2 satisfaction guarantee.` : "Tracking info dispatched.")
+        };
+
+        tickets.unshift(newTicket);
+        renderStats();
+        renderApprovals();
+        renderTickets();
+
+        // Show execution trace
+        const traceCard = document.getElementById("sim-result-card");
+        traceCard.style.display = "block";
+        document.getElementById("sim-trace-content").innerHTML = `
+          <div style="background: var(--bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem; font-size: 0.82rem; font-family: monospace; line-height: 1.6;">
+            <div>[1] <b>Inbound Intake:</b> Order ${orderId} | Customer ${email}</div>
+            <div>[2] <b>RAG Policy Check:</b> Consulted /knowledge/store_policies.md</div>
+            <div>[3] <b>Triage Agent Decision:</b> <span style="color: ${isOverThreshold ? 'var(--gold)' : 'var(--green)'};">${newTicket.ai_analysis.decision}</span></div>
+            <div>[4] <b>Action:</b> ${isOverThreshold ? '🚨 <b>PAUSED AT HUMAN APPROVAL GATE</b>' : '⚡ <b>EXECUTED INSTANT REFUND</b>'}</div>
+            <div style="margin-top: 0.5rem; color: var(--text-muted);">Generated Ticket: #${ticketId}</div>
+          </div>
+          <button class="btn btn-secondary" style="margin-top: 1rem; width: 100%;" onclick="switchTab('${isOverThreshold ? 'approvals' : 'tickets'}')">
+            View in ${isOverThreshold ? 'Approval Inbox' : 'Support Queue'} &rarr;
+          </button>
+        `;
+
+        showToast(isOverThreshold ? "Ticket sent to Owner Approval Gate!" : "Instant refund processed!", isOverThreshold ? "alert" : "success");
+      }
+
+      // 4. Navigation & UI Helpers
+      function switchTab(tabId) {
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+
+        const targetNav = Array.from(document.querySelectorAll('.nav-item')).find(el => el.textContent.toLowerCase().includes(tabId.substring(0, 4)));
+        if (targetNav) targetNav.classList.add('active');
+
+        const targetView = document.getElementById('view-' + tabId);
+        if (targetView) targetView.classList.add('active');
+
+        const titleMap = {
+          approvals: ["Store Owner Approval Gate", "High-value refund requests (> $25.00) and damaged items requiring human sign-off."],
+          tickets: ["Customer Support Queue", "All inbound inquiries triaged by category, sentiment, and resolution status."],
+          orders: ["Orders & Tracking Directory", "E-commerce shipment records and carrier transit status."],
+          simulator: ["Message Simulator & Test Harness", "Simulate live customer messages to demo automated triage and human-in-the-loop gates."]
+        };
+
+        if (titleMap[tabId]) {
+          document.getElementById("view-title").textContent = titleMap[tabId][0];
+          document.getElementById("view-subtitle").textContent = titleMap[tabId][1];
+        }
+      }
+
+      function filterTickets(status, btn) {
+        document.querySelectorAll('.filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (status === 'all') renderTickets(tickets);
+        else if (status === 'shipping_delay') renderTickets(tickets.filter(t => t.category === 'shipping_delay'));
+        else renderTickets(tickets.filter(t => t.status === status));
+      }
+
+      function filterOrders(status, btn) {
+        document.querySelectorAll('.filter-tabs .filter-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (status === 'all') renderOrders(orders);
+        else renderOrders(orders.filter(o => o.shipping_status === status));
+      }
+
+      function searchTickets(query) {
+        const q = query.toLowerCase();
+        renderTickets(tickets.filter(t => t.ticket_id.toLowerCase().includes(q) || t.customer_name.toLowerCase().includes(q) || t.subject.toLowerCase().includes(q)));
+      }
+
+      function searchOrders(query) {
+        const q = query.toLowerCase();
+        renderOrders(orders.filter(o => o.order_id.toLowerCase().includes(q) || o.customer_name.toLowerCase().includes(q) || o.tracking_number.toLowerCase().includes(q)));
+      }
+
+      function toggleTheme() {
+        const isDark = document.documentElement.getAttribute("data-theme") !== "light";
+        document.documentElement.setAttribute("data-theme", isDark ? "light" : "dark");
+      }
+
+      function showToast(msg, type = "success") {
+        const toast = document.getElementById("toast");
+        toast.className = `toast show ${type}`;
+        document.getElementById("toast-msg").textContent = msg;
+        document.getElementById("toast-icon").textContent = type === "success" ? "✓" : "⚠️";
+        setTimeout(() => toast.classList.remove("show"), 3500);
+      }
+
+      // 5. Connect to Live Lemma SDK if served in Lemma Host
+      (function connectLemma() {
+        const cfg = window.__LEMMA_CONFIG__ || {};
+        if (cfg.apiUrl) {
+          const s = document.createElement("script");
+          s.src = cfg.apiUrl.replace(/\/$/, "") + "/public/sdk/lemma-client.js";
+          s.onload = async function() {
+            try {
+              const client = new window.LemmaClient.LemmaClient();
+              const authState = await client.initialize();
+              if (authState.status === "authenticated") {
+                const liveTickets = await client.records.list("tickets", { limit: 50 });
+                if (liveTickets && liveTickets.items && liveTickets.items.length > 0) {
+                  tickets = liveTickets.items;
+                }
+                const liveOrders = await client.records.list("orders", { limit: 50 });
+                if (liveOrders && liveOrders.items && liveOrders.items.length > 0) {
+                  orders = liveOrders.items;
+                }
+              }
+            } catch (err) {
+              console.log("Lemma live connection skipped, using local data store:", err);
+            }
+            renderStats();
+            renderApprovals();
+            renderTickets();
+            renderOrders();
+          };
+          document.head.appendChild(s);
+        } else {
+          // Initialize with curated mock data
+          renderStats();
+          renderApprovals();
+          renderTickets();
+          renderOrders();
+        }
+      })();
+    </script>
+  </body>
+</html>

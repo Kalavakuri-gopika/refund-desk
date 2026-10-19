@@ -1,0 +1,28 @@
+{
+  "name": "audit_delayed_shipments",
+  "description": "Audits in-transit and delayed shipments, flagging orders stalled in transit and opening proactive customer care tickets.",
+  "type": "API",
+  "code": { "$file": "code.py" },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "orders",
+        "permission_ids": [
+          "datastore.table.read",
+          "datastore.record.read",
+          "datastore.record.write"
+        ]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "tickets",
+        "permission_ids": [
+          "datastore.table.read",
+          "datastore.record.read",
+          "datastore.record.write"
+        ]
+      }
+    ]
+  }
+}

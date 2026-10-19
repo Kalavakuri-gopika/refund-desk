@@ -1,0 +1,28 @@
+{
+  "name": "process_refund",
+  "description": "Validates and executes a refund for an order, updating the order and ticket records.",
+  "type": "API",
+  "code": { "$file": "code.py" },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "orders",
+        "permission_ids": [
+          "datastore.table.read",
+          "datastore.record.read",
+          "datastore.record.write"
+        ]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "tickets",
+        "permission_ids": [
+          "datastore.table.read",
+          "datastore.record.read",
+          "datastore.record.write"
+        ]
+      }
+    ]
+  }
+}

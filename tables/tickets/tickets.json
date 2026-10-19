@@ -1,0 +1,40 @@
+{
+  "name": "tickets",
+  "primary_key_column": "id",
+  "enable_rls": false,
+  "visibility": "POD",
+  "columns": [
+    { "name": "ticket_id", "type": "TEXT", "required": true, "unique": true, "max_length": 64 },
+    { "name": "order_id", "type": "TEXT", "required": true, "max_length": 64 },
+    { "name": "customer_name", "type": "TEXT", "max_length": 128 },
+    { "name": "customer_email", "type": "TEXT", "required": true, "max_length": 128 },
+    { "name": "subject", "type": "TEXT", "required": true, "max_length": 240 },
+    { "name": "message", "type": "TEXT", "required": true },
+    {
+      "name": "category",
+      "type": "ENUM",
+      "required": true,
+      "default": "refund_request",
+      "options": ["refund_request", "damaged_item", "shipping_delay", "general_faq"]
+    },
+    {
+      "name": "status",
+      "type": "ENUM",
+      "required": true,
+      "default": "new",
+      "options": ["new", "auto_resolved", "waiting_approval", "approved", "rejected", "escalated", "closed"]
+    },
+    {
+      "name": "priority",
+      "type": "ENUM",
+      "required": true,
+      "default": "normal",
+      "options": ["low", "normal", "high", "urgent"]
+    },
+    { "name": "requested_refund", "type": "FLOAT", "default": 0.0 },
+    { "name": "ai_analysis", "type": "JSON" },
+    { "name": "resolution_note", "type": "TEXT" },
+    { "name": "assigned_role", "type": "TEXT", "default": "support_lead" }
+  ],
+  "config": {}
+}

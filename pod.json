@@ -1,0 +1,5 @@
+{
+  "format_version": 3,
+  "name": "refund-desk",
+  "description": "AI Customer Support & Dispute Operations: auto-issues refunds under $25, halts high-value claims at Store Owner approval gate, and runs nightly carrier sweeps."
+}

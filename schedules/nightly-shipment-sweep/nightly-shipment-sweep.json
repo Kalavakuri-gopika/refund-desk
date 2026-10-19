@@ -1,0 +1,10 @@
+{
+  "name": "nightly-shipment-sweep",
+  "schedule_type": "TIME",
+  "config": {
+    "cron": "0 23 * * *"
+  },
+  "agent_name": "triage-agent",
+  "is_active": true,
+  "visibility": "POD"
+}

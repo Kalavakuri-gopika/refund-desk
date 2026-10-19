@@ -1,0 +1,8 @@
+{
+  "ticket_id": "TCK-502",
+  "order_id": "ORD-1084",
+  "customer_name": "Sarah Jenkins",
+  "customer_email": "sarah.jenkins@example.com",
+  "message": "My winter parka arrived with a ripped zipper. Please refund $85.00.",
+  "requested_refund": 85.0
+}

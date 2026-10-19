@@ -1,0 +1,5 @@
+{
+  "name": "refund-desk-app",
+  "description": "Operations dashboard for RefundDesk: approval inbox, ticket queue, orders tracking, and customer message simulation.",
+  "public_slug": "refund-desk-app"
+}

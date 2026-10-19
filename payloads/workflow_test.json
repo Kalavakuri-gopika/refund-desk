@@ -1,0 +1,8 @@
+{
+  "ticket_id": "TCK-501",
+  "order_id": "ORD-1081",
+  "customer_name": "Elena Rostova",
+  "customer_email": "elena.r@example.com",
+  "message": "My ceramic mug arrived with a crack in the handle. Can you refund $22?",
+  "requested_refund": 22.0
+}

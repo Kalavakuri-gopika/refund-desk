@@ -1,0 +1,56 @@
+{
+  "name": "triage-agent",
+  "description": "Reviews incoming e-commerce customer support inquiries, consults store policies, and determines refund eligibility and next steps.",
+  "instruction": { "$file": "instruction.md" },
+  "toolsets": ["POD"],
+  "visibility": "POD",
+  "output_schema": {
+    "type": "object",
+    "properties": {
+      "category": {
+        "type": "string",
+        "enum": ["refund_request", "damaged_item", "shipping_delay", "general_faq"]
+      },
+      "sentiment": {
+        "type": "string",
+        "enum": ["positive", "neutral", "frustrated", "angry"]
+      },
+      "policy_eligible": {
+        "type": "boolean"
+      },
+      "refund_amount": {
+        "type": "number"
+      },
+      "decision": {
+        "type": "string",
+        "enum": ["auto_approve", "requires_owner_approval", "draft_reply"]
+      },
+      "reasoning": {
+        "type": "string"
+      },
+      "draft_response": {
+        "type": "string"
+      }
+    },
+    "required": ["category", "decision", "reasoning", "draft_response"]
+  },
+  "permissions": {
+    "grants": [
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "orders",
+        "permission_ids": ["datastore.table.read", "datastore.record.read"]
+      },
+      {
+        "resource_type": "datastore_table",
+        "resource_name": "tickets",
+        "permission_ids": ["datastore.table.read", "datastore.record.read", "datastore.record.write"]
+      },
+      {
+        "resource_type": "folder",
+        "resource_name": "/knowledge",
+        "permission_ids": ["folder.read"]
+      }
+    ]
+  }
+}
