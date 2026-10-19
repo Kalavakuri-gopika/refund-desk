@@ -1,8 +1,7 @@
 # RefundDesk: AI Customer Support & Refund Dispute Resolver
 
 > **RefundDesk resolves e-commerce customer support questions and return requests using store policies, auto-issues refunds under $25, and routes damaged goods or larger claims to human Store Owner sign-off.**
-
-Built on **Lemma** form **Nexus Spring of Code (NSOC) 2026 Contributor**.
+.
 
 ---
 
