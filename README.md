@@ -2,7 +2,7 @@
 
 > **RefundDesk resolves e-commerce customer support questions and return requests using store policies, auto-issues refunds under $25, and routes damaged goods or larger claims to human Store Owner sign-off.**
 
-Built on **Lemma** for **Nexus Spring of Code (NSOC) 2026**.
+Built on **Lemma** form **Nexus Spring of Code (NSOC) 2026 Contributor**.
 
 ---
 
@@ -58,21 +58,6 @@ lemma apps open refund-desk-app
 
 ---
 
-## 🎬 2-Minute Video Demo Runbook
-
-1. **The Hero Moment (Approval Gate):**
-   - Open the **Approval Inbox** tab.
-   - Point to Ticket `#TCK-401` ($85.00 winter parka zipper defect).
-   - Show the AI audit explaining why it exceeded the $25 threshold.
-   - Click **"Authorize Refund"** on camera $\rightarrow$ watch the card resolve, the orders table update, and the payment gateway trigger execute.
-2. **The Auto-Refund:**
-   - Open the **Message Simulator** tab.
-   - Select the preset for `$18.50 Beanie`.
-   - Click **"Process Inbound Message"** $\rightarrow$ show that it auto-resolved immediately without disturbing the store owner.
-3. **The Autonomous Nightly Sweep:**
-   - Click **"Trigger Nightly Sweep"** $\rightarrow$ observe the carrier scanner identify delayed tracking numbers and create proactive tickets.
-
----
 
 ## 📦 Pod Resources Summary
 
